@@ -1,15 +1,19 @@
 .statsgrid {
     display: grid;
-
-    grid-template-columns: repeat(
-        auto-fit,
-        minmax(60px, 220px)
-    );
-    grid-template-columns: repeat(1,fr);
     gap: 6px;
 
-    max-width: calc(5 * 220px + 4 * 6px);
+    grid-template-columns: repeat(5, 1fr);
 }
+
+@media (max-width: 550px) {
+    .statsgrid {
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(100px, 1fr)
+        );
+    }
+}
+
 .stat-box {
     border: 2px solid var(--primary-color);
     padding: 6px;
@@ -17,8 +21,8 @@
     display: flex;
     flex-direction: column;
 
-    min-width: 60px;
-    max-width: 220px;
+    min-width: 100px;
+    max-width: 100%;
 }
 
 .stat-box-label {
@@ -39,9 +43,13 @@
     font-size: 16px;
 }
 
+.stat-divider{
+    font-size: 1.5rem;
+}
+
 input[type="number"] {
     width: 100%;
-    font-size: 1rem;
+    font-size: 1.5rem;
     box-sizing: border-box;
 }
 
