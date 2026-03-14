@@ -1,7 +1,7 @@
 .statsgrid {
     display: grid;
     gap: 6px;
-
+    
     grid-template-columns: repeat(5, 1fr);
 }
 
@@ -25,7 +25,7 @@
     max-width: 100%;
 }
 
-.stat-box-label {
+.box-label {
     margin-bottom: 6px;
     font-weight: bold;
     text-align: left;
@@ -47,7 +47,7 @@
     font-size: 1.5rem;
 }
 
-input[type="number"] {
+input {
     width: 100%;
     font-size: 1.5rem;
     box-sizing: border-box;
