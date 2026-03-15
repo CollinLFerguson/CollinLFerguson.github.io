@@ -7,9 +7,10 @@
         <link rel="stylesheet" href="./style/stylesheets/fonts.css">
         <link rel="stylesheet" href="./style/stylesheets/retro_styles.css">
         <link rel="stylesheet" href="./style/stylesheets/styles.css">
+        <script type="module" src="./src/functions/utils/loadWebComponents.js"></script>
     </head>
     <body>
-        <div class="retro-container scanline-effect old-crt-monitor">
+        <div class="effects-container retro-container scanline-effect old-crt-monitor">
             <header>
                 <h1></h1>
                 <nav role="navigation">
@@ -57,7 +58,8 @@
                             <h2>Stats</h2>
                         </header>
                         <div class="statsgrid">
-                            <div class="stat-box STAT">
+                            <stat-box-curr-max label="INT"></stat-box-curr-max>
+                            <!-- <div class="stat-box STAT">
                                 <div class="box-label">INT</div>
                                 <div class="input-row">
                                     <div class="input-group">
@@ -68,7 +70,7 @@
                                         <input type="number" id="stat_int_max">
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="stat-box STAT">
                                 <div class="box-label">REF</div>
                                 <div class="input-row">

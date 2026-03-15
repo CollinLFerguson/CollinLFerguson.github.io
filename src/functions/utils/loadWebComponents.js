@@ -1,0 +1,1 @@
+import '../../web_components/stat-box-curr-max.js'
