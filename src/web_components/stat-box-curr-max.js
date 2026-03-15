@@ -9,7 +9,7 @@ class StatBoxCurrMax extends HTMLElement {
         shadow.innerHTML = `
             <div class="stat-box">
                 <div class="box-label">
-                    <slot name="label"></slot>
+                    <span class="label"></span>
                 </div>
 
                 <div class="input-row">
@@ -19,7 +19,7 @@ class StatBoxCurrMax extends HTMLElement {
                 </div>
             </div>
         `;
-        addGlobalStylesToShadowRoot(this.shadowRoot); // look here!
+        addGlobalStylesToShadowRoot(this.shadowRoot);
     }
     connectedCallback() {
         this.shadowRoot.querySelector(".label").textContent =
