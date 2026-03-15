@@ -1,4 +1,4 @@
-import addGlobalStylesToShadowRoot from "../functions/utils/addGlobalStylesToShadowRoot";
+import addGlobalStylesToShadowRoot from "../functions/utils/addGlobalStylesToShadowRoot.js";
 
 class StatBoxCurrMax extends HTMLElement {
     constructor() {
