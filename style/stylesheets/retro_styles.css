@@ -65,8 +65,10 @@ footer {
 
 main {
     overflow-y: visible;
-    overflow-x: hidden;
+    overflow-x: visible;
     gap:6px;
+    height: fit-content;
+    width: fit-content;
 }
 
 section {
@@ -81,6 +83,7 @@ section {
     border: 1px solid var(--primary-color);
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    max-width: fit-content;
 }
 
 /* CRT ANIMATIONS */
