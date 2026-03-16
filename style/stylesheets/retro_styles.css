@@ -30,13 +30,23 @@ div.retro-container {
     height: 98vh;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    overflow: hidden;
+    overflow: visible;
     padding: 1rem;
     border: 2px solid var(--primary-color);
     color: var(--primary-color);
+    text-shadow: 0 0 0.5rem;
+}
+
+div.scanline-effect,
+div.scanline-effect input,
+div.scanline-effect select,
+div.scanline-effect textarea,
+div.scanline-effect button {
     mask-image: linear-gradient(to bottom, #0005 50%, #000 50%);
     mask-size: 100% 2px;
-    text-shadow: 0 0 0.5rem;
+
+    -webkit-mask-image: linear-gradient(to bottom, #0005 50%, #000 50%);
+    -webkit-mask-size: 100% 2px;
 }
 
 header,
@@ -47,12 +57,12 @@ footer {
 }
 
 main {
-    overflow: hidden auto;
+    overflow: visible;
 }
 
 section {
     /* height: 100%; */
-    overflow: hidden auto;
+    overflow: visible;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     padding-left: 0.5rem;
@@ -99,6 +109,7 @@ section {
 input,
 button,
 select,
+select option,
 textarea {
     font: inherit;
     color: inherit;

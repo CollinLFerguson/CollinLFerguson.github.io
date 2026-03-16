@@ -1,6 +1,6 @@
 import addGlobalStylesToShadowRoot from "../functions/utils/addGlobalStylesToShadowRoot.js";
 
-class StatBoxCurrMax extends HTMLElement {
+class labeledTextBox extends HTMLElement {
     constructor() {
         super();
 
@@ -11,11 +11,10 @@ class StatBoxCurrMax extends HTMLElement {
                 <div class="box-label">
                     <span class="label"></span>
                 </div>
-
                 <div class="input-row">
-                    <input type="number" class="curr">
-                    <span>/</span>
-                    <input type="number" class="max">
+                    <div class="input-row">
+                        <input type="text" id="text_input">
+                    </div>
                 </div>
             </div>
         `;
@@ -27,39 +26,30 @@ class StatBoxCurrMax extends HTMLElement {
     }
 
     // getters
-    get curr() {
-        return Number(this.shadowRoot.querySelector(".curr").value);
-    }
-
-    get max() {
-        return Number(this.shadowRoot.querySelector(".max").value);
-    }
-
     get label(){
         return this.getAttribute("label") ?? "stat";
+    }
+    get text(){
+        return this.shadowRoot.querySelector(".text_input").value;
     }
 
     get statObject(){
         const label = this.getAttribute("label") ?? "stat";
         const id = this.id
-        
-        return { 
+
+        return {
             [id]: {
-                label: label,
-                curr: this.curr,
-                max: this.max
+                label: `stat_${label}`,
+                text: this.text
             }
         };
     }
 
     // setters (optional but useful)
-    set curr(val) {
-        this.shadowRoot.querySelector(".curr").value = val;
-    }
 
-    set max(val) {
-        this.shadowRoot.querySelector(".max").value = val;
+    set text(val) {
+        this.shadowRoot.querySelector(".text_input").value = val;
     }
 }
 
-customElements.define("stat-box-curr-max", StatBoxCurrMax);
+customElements.define("labeled-text-box", labeledTextBox);

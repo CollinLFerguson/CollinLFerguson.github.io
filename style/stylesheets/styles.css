@@ -56,3 +56,20 @@ input {
 article {
     max-width: 100%;
 }
+
+input[type="number"] {
+    color-scheme: dark;
+}
+select{
+    color-scheme: dark;
+}
+select option{
+    color-scheme: dark;
+    background-color: var(--background-color);
+}
+
+table { 
+    border-collapse: collapse; width: 100%; 
+}
+
+button { cursor: pointer; }
