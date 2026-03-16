@@ -26,8 +26,8 @@ class RetroSelect extends HTMLElement {
                     cursor: pointer;
                     background: transparent;
                     color: var(--primary-color);
-                    display:flex
-
+                    display:flex;
+                    width: 100%
                 }
 
                 .arrow {

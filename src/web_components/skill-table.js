@@ -13,7 +13,9 @@ class SkillTable extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 td, th { border: 1px solid; padding: 4px; text-align: center; }
-
+                .retro-button{
+                    min-width:2rem;
+                }
                 @media (max-width: 700px) {
                     table,
                     thead,
@@ -59,6 +61,7 @@ class SkillTable extends HTMLElement {
                     retro-select {
                         flex: 1;
                         margin-left: 8px;
+                        width:100%;
                     }
                 }
             </style>
@@ -80,7 +83,7 @@ class SkillTable extends HTMLElement {
                 <tbody></tbody>
             </table>
 
-            <button id="addRow">Add Row</button>
+            <button class="retro-button" id="addRow">+</button>
         `;
 
         addGlobalStylesToShadowRoot(this.shadowRoot);

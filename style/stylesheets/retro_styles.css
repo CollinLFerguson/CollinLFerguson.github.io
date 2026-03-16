@@ -11,7 +11,6 @@
 }
 * {
     margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
@@ -24,19 +23,41 @@ body {
     cursor: url('./assets/mouse.svg')
 }
 div.retro-effects{
-    width: 98vw;
-    height: 98vh;
-    padding: 1rem;
-    border: 2px solid var(--primary-color);
     color: var(--primary-color);
-    text-shadow: 0 0 0.5rem;
+    /* text-shadow: 0 0 0.5rem; */
     overflow:hidden;
+    filter: drop-shadow(0 0 1rem var(--primary-color));
+}
 
-    display: flex;
-    flex-direction: column;
+div.retro-effects input, 
+div.retro-effects select, 
+div.retro-effects textarea, 
+div.retro-effects button,
+div.retro-effects input:focus,
+div.retro-effects select:focus,
+div.retro-effects textarea:focus,
+div.retro-effects button:focus {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--primary-color);
+
+    filter: none;
+    text-shadow: inherit;
+}
+
+div.retro-effects * {
+    will-change: filter;
 }
 
 div.retro-container {
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    width: 98vw;
+    height: 98vh;
     overflow: auto;
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -44,11 +65,7 @@ div.retro-container {
     
 }
 
-div.scanline-effect,
-div.scanline-effect input,
-div.scanline-effect select,
-div.scanline-effect textarea,
-div.scanline-effect button {
+div.scanline-effect {
     mask-image: linear-gradient(to bottom, #0005 50%, #000 50%);
     mask-size: 100% 2px;
 
@@ -73,8 +90,7 @@ main {
 
 section {
     /* height: 100%; */
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: visible;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     padding-left: 0.5rem;
@@ -83,7 +99,7 @@ section {
     border: 1px solid var(--primary-color);
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-    max-width: fit-content;
+    max-width: 100%;
 }
 
 /* CRT ANIMATIONS */
