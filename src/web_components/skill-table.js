@@ -13,6 +13,54 @@ class SkillTable extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 td, th { border: 1px solid; padding: 4px; text-align: center; }
+
+                @media (max-width: 700px) {
+                    table,
+                    thead,
+                    tbody,
+                    tr,
+                    td,
+                    th {
+                        display: block;
+                        width: 100%;
+                    }
+
+                    thead {
+                        display: none;
+                    }
+
+                    tr {
+                        border: 1px solid var(--primary-color);
+                        margin-bottom: 10px;
+                        padding: 6px;
+                    }
+
+                    td {
+                        border: none;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 6px 4px;
+                    }
+
+                    td::before {
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+
+                    td:nth-child(1)::before { content: "Remove"; }
+                    td:nth-child(2)::before { content: "Skill"; }
+                    td:nth-child(3)::before { content: "Stat"; }
+                    td:nth-child(4)::before { content: "LVL"; }
+                    td:nth-child(5)::before { content: "Bonus"; }
+                    td:nth-child(6)::before { content: "Total"; }
+                    td:nth-child(7)::before { content: "Roll"; }
+
+                    input,
+                    retro-select {
+                        flex: 1;
+                        margin-left: 8px;
+                    }
+                }
             </style>
 
             <div class="label"></div>

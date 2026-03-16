@@ -24,17 +24,25 @@ body {
     background-color: var(--background-color);
     cursor: url('./assets/mouse.svg')
 }
-
-div.retro-container {
+div.retro-effects{
     width: 98vw;
     height: 98vh;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    overflow: visible;
     padding: 1rem;
     border: 2px solid var(--primary-color);
     color: var(--primary-color);
     text-shadow: 0 0 0.5rem;
+    overflow:hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+div.retro-container {
+    overflow: auto;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 0;
+    
 }
 
 div.scanline-effect,
@@ -57,12 +65,14 @@ footer {
 }
 
 main {
-    overflow: visible;
+    overflow-y: visible;
+    overflow-x: hidden;
 }
 
 section {
     /* height: 100%; */
-    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     padding-left: 0.5rem;

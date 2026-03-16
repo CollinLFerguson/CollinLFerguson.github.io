@@ -11,7 +11,7 @@ class RetroSelect extends HTMLElement {
         this._highlightIndex = -1;
 
         this.attachShadow({ mode: "open" });
-
+        //TODO: need to clean up this css.
         this.shadowRoot.innerHTML = `
             <style>
                 :host {
