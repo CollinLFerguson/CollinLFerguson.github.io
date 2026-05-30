@@ -106,7 +106,7 @@ class RetroSelect extends HTMLElement {
     get value() {
         return this._value;
     }
-
+    
     set value(v) {
         this._value = v;
         this.updateLabel();

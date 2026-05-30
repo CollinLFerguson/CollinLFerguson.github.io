@@ -24,15 +24,39 @@ class StatBoxCurrMax extends HTMLElement {
     connectedCallback() {
         this.shadowRoot.querySelector(".label").textContent =
             this.getAttribute("label") ?? "";
+
+        // Listen for input changes and dispatch stat-changed event
+        const currInput = this.shadowRoot.querySelector('.curr');
+        const maxInput = this.shadowRoot.querySelector('.max');
+        const dispatchChange = () => {
+                this.dispatchEvent(new CustomEvent('stat-changed', {
+                    detail: {
+                        name: this.label,
+                        curr: this.curr,
+                        max: this.max
+                    },
+                    bubbles: true,
+                    composed: true
+                }));
+        };
+        currInput.addEventListener('input', dispatchChange);
+        maxInput.addEventListener('input', dispatchChange);
     }
 
-    // getters
+    // getter/setter for curr
     get curr() {
         return Number(this.shadowRoot.querySelector(".curr").value);
     }
+    set curr(val) {
+        this.shadowRoot.querySelector(".curr").value = val;
+    }
 
+    // getter/setter for max
     get max() {
         return Number(this.shadowRoot.querySelector(".max").value);
+    }
+    set max(val) {
+        this.shadowRoot.querySelector(".max").value = val;
     }
 
     get label(){
@@ -50,15 +74,6 @@ class StatBoxCurrMax extends HTMLElement {
                 max: this.max
             }
         };
-    }
-
-    // setters (optional but useful)
-    set curr(val) {
-        this.shadowRoot.querySelector(".curr").value = val;
-    }
-
-    set max(val) {
-        this.shadowRoot.querySelector(".max").value = val;
     }
 }
 

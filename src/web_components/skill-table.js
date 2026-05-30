@@ -96,9 +96,30 @@ class SkillTable extends HTMLElement {
         this.$addRow.addEventListener("click", () => this.addEmptyRow());
 
         // Event delegation
-        this.$tbody.addEventListener("input", (e) => this.handleInput(e));
-        this.$tbody.addEventListener("change", (e) => this.handleInput(e));
-        this.$tbody.addEventListener("click", (e) => this.handleClick(e));
+        this.$tbody.addEventListener("input", (e) => {
+            this.handleInput(e);
+            this.dispatchSkillsChanged();
+        });
+        this.$tbody.addEventListener("change", (e) => {
+            this.handleInput(e);
+            this.dispatchSkillsChanged();
+        });
+        this.$tbody.addEventListener("click", (e) => {
+            this.handleClick(e);
+            this.dispatchSkillsChanged();
+        });
+
+    } 
+
+    // Dispatch a custom event when skills change
+    dispatchSkillsChanged() {
+        this.dispatchEvent(new CustomEvent('skills-changed', {
+            detail: {
+                skills: this.data
+            },
+            bubbles: true,
+            composed: true
+        }));
     }
 
     connectedCallback() {
@@ -109,9 +130,26 @@ class SkillTable extends HTMLElement {
 
     set stats(arr) {
         this._stats = arr || [];
+        // console.log("Stats", arr)
 
+        // For each row, try to preserve the selected stat name
         this.$tbody.querySelectorAll("tr").forEach(tr => {
+            // Save current stat name before repopulating
+            const statSelect = tr.querySelector('.stat');
+            // console.log("--statSelect", statSelect)
+            // console.log("--statSelect.options", statSelect.value)
+            // console.log("--statSelect.name", statSelect.label)
+            // console.log("-- statSelect?.selectedOptions",  statSelect?.selectedOptions)
+            // console.log("--statSelect?.selectedOptions?.[0]?.label", statSelect?.selectedOptions?.[0]?.label)
+            const prevStatName = statSelect?.selectedOptions?.[0]?.label;
             this.populateStatDropdown(tr);
+            // Try to restore previous selection by stat name
+            if (prevStatName) {
+                const idx = this._stats.findIndex(s => s.name === prevStatName);
+                if (idx !== -1) {
+                    statSelect.value = this._stats[idx].value;
+                }
+            } 
             this.updateTotal(tr);
         });
     }
@@ -151,7 +189,6 @@ class SkillTable extends HTMLElement {
     /* ---------- dropdown ---------- */
 
     populateStatDropdown(tr, selectedValue) {
-
         const select = tr.querySelector(".stat");
 
         select.options = this._stats.map(stat => ({

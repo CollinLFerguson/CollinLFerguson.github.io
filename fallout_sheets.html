@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="./style/stylesheets/styles.css">
 
         <script type="module" src="./src/functions/utils/loadWebComponents.js"></script>
+        <script type="module" src="./src/character.js"></script>
     </head>
     <body>
         <div class="effects-container 
@@ -17,8 +18,6 @@
         old-crt-monitor
         ">
         <div class="retro-container retro-effects">
-
-            
             <header>
                 <h1></h1>
                 <nav role="navigation">
@@ -29,14 +28,15 @@
             </header>
             <main>
                 <section id="identity">
-                    <div style="width:100%"
+                    <div style="width:100%">
                         <header>
                             <h2>Identity</h2>
                         </header>
-                    <div class="statsgrid">
-                        <labeled-text-box id="identifier_name" label="NAME"></labeled-text-box>
-                        <labeled-text-box id="identifier_role" label="ROLE"></labeled-text-box>
-                        <labeled-text-box id="identifier_origin" label="ORIGIN"></labeled-text-box>
+                        <div class="statsgrid" id="identity-grid">
+                            <labeled-text-box id="identifier_name" label="NAME"></labeled-text-box>
+                            <labeled-text-box id="identifier_role" label="ROLE"></labeled-text-box>
+                            <labeled-text-box id="identifier_origin" label="ORIGIN"></labeled-text-box>
+                        </div>
                     </div>
                 </section>
                 <section id="stats">
@@ -44,7 +44,7 @@
                         <header>
                             <h2>Stats</h2>
                         </header>
-                        <div class="statsgrid">
+                        <div class="statsgrid" id="stats-grid">
                             <stat-box-curr-max id="stat_int" label="INT"></stat-box-curr-max>
                             <stat-box-curr-max id="stat_ref" label="REF"></stat-box-curr-max>
                             <stat-box-curr-max id="stat_dex" label="DEX"></stat-box-curr-max>
@@ -59,7 +59,7 @@
                     </div>
                 </section>
                 <section id="Skills">
-                        <header>
+                    <header>
                         <h2>Stats</h2>
                     </header>
                     <skill-table label="Skills" id="skills-table"></skill-table>
@@ -73,19 +73,91 @@
     </body>
 </html>
 
-<script>
-    function initializeStats(){
-        const table = document.getElementById("skills-table");
+<script type="module">
+import { character, updateCharacter } from "./src/character.js";
 
-        table.stats = [
-            { name: "BODY", value: 2 },
-            { name: "DEX", value: 3 },
-            { name: "INT", value: 5 }
-        ];
+function rollFunction(){
+    console.log("Rolling")
+}
 
-        table.addEmptyRow();
-    }
+function syncIdentityToView() {
+    document.getElementById('identifier_name').value = character.identity.name;
+    document.getElementById('identifier_role').value = character.identity.role;
+    document.getElementById('identifier_origin').value = character.identity.origin;
+}
 
-    document.addEventListener('DOMContentLoaded', initializeStats)
+function syncStatsToView() {
+    Object.entries(character.stats).forEach(([label, value]) => {
+        const el = Array.from(document.querySelectorAll('stat-box-curr-max')).find(e => e.label === label);
+        if (el) {
+            el.curr = value.current;
+            el.max = value.max;
+        }
+    });
+}
 
+function syncSkillsToView() {
+    const table = document.getElementById("skills-table");
+    table._rollCallback = rollFunction;
+    table.stats = Object.entries(character.stats).map(([name, value]) => ({ name, value }));
+    table.data = character.skills;
+}
+
+function syncViewToCharacter() {
+    // Identity
+    updateCharacter('identity', {
+        name: document.getElementById('identifier_name').value,
+        role: document.getElementById('identifier_role').value,
+        origin: document.getElementById('identifier_origin').value
+    });
+    // Stats
+    const stats = {};
+    document.querySelectorAll('stat-box-curr-max').forEach(el => {
+        stats[el.label] = {'current':el?.curr || 0, 'max':el?.max || 0} 
+    });
+    updateCharacter('stats', stats);
+    // Skills
+    const table = document.getElementById("skills-table");
+    if (table) updateCharacter('skills', table.data);
+}
+
+function bindViewEvents() {
+    // Identity
+    ['identifier_name', 'identifier_role', 'identifier_origin'].forEach(id => {
+        document.getElementById(id).addEventListener('input', syncViewToCharacter);
+    });
+    // Stats
+    document.querySelectorAll('stat-box-curr-max').forEach(el => {
+        el.addEventListener('stat-changed', (e) => {
+            const { name, curr, max } = e.detail;
+            updateCharacter('stats', { [name]: { current: curr, max: max } });
+            syncViewToCharacter(); // Sync the entire view to ensure consistency
+        });
+    });
+
+    // Skills
+    const table = document.getElementById("skills-table");
+    table.addEventListener('skills-changed', (e) => {
+        console.log('--skills-changed--', e.detail);
+    });
+    // if (table) {
+    //     table.addEventListener('skills-changed', syncViewToCharacter);
+    //     table.addEventListener('input', syncViewToCharacter);
+    //     table.addEventListener('change', syncViewToCharacter);
+    // }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial sync
+    syncIdentityToView();
+    syncStatsToView();
+    syncSkillsToView();
+    bindViewEvents();
+    // Listen for model changes
+    document.addEventListener('character-updated', () => {
+        syncIdentityToView();
+        syncStatsToView();
+        syncSkillsToView();
+    });
+});
 </script>

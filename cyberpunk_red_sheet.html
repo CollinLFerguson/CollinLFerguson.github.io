@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CYBERPUNK RED // DATAFILE</title>
+    <link rel="stylesheet" href="./style/stylesheets/fonts.css">
+    <link rel="stylesheet" href="./style/stylesheets/retro_styles.css">
+    <link rel="stylesheet" href="./style/stylesheets/styles.css">
+    <script type="module" src="./src/functions/utils/loadWebComponents.js"></script>
+    <style>
+        /* --- layout overrides --- */
+        main { width: 100%; min-width: 0; }
+
+        .sheet-grid {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 0.5rem;
+            align-items: start;
+            width: 100%;
+        }
+
+        .sheet-main { display: flex; flex-direction: column; }
+
+        .lifepath-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            align-items: start;
+            width: 100%;
+        }
+
+        /* --- section header --- */
+        .cp-header {
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            border-bottom: 1px solid var(--primary-color);
+            margin-bottom: 0.4rem;
+            padding-bottom: 0.15rem;
+        }
+
+        /* --- field rows --- */
+        .f-row {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .f-label {
+            font-size: 0.65rem;
+            opacity: 0.75;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+        .f-input {
+            flex: 1;
+            font-size: 0.9rem;
+            padding: 2px 4px;
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+            border-bottom: 1px solid var(--primary-color);
+            font-family: inherit;
+            outline: none;
+        }
+        .f-input-sm { width: 56px; flex: none; }
+        .f-input-bordered {
+            border: 1px solid var(--primary-color);
+        }
+
+        /* --- identity portrait --- */
+        .identity-layout {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0.5rem;
+            align-items: start;
+        }
+        .portrait-box {
+            width: 80px;
+            height: 90px;
+            border: 1px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            opacity: 0.45;
+        }
+
+        /* --- stats grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        /* --- combat grid --- */
+        .combat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+
+        /* --- weapons / armor layout --- */
+        .wa-layout {
+            display: grid;
+            grid-template-columns: 190px 1fr;
+            gap: 0.5rem;
+        }
+        .wa-note {
+            font-size: 0.55rem;
+            opacity: 0.55;
+            margin-top: 3px;
+        }
+
+        /* --- generic sheet table --- */
+        .cp-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .cp-table th {
+            border: 1px solid var(--primary-color);
+            padding: 2px 4px;
+            font-size: 0.6rem;
+            opacity: 0.8;
+            text-align: left;
+        }
+        .cp-table td {
+            border: 1px solid var(--primary-color);
+            padding: 0;
+        }
+        .cp-table td input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--primary-color);
+            font-family: inherit;
+            font-size: 0.8rem;
+            padding: 2px 4px;
+            outline: none;
+        }
+
+        /* --- cyberware entries --- */
+        .cyber-entry {
+            border: 1px solid var(--primary-color);
+            padding: 4px;
+            margin-bottom: 4px;
+        }
+        .cyber-header-row {
+            display: grid;
+            grid-template-columns: 1fr 80px;
+            gap: 4px;
+            font-size: 0.55rem;
+            opacity: 0.6;
+            margin-bottom: 2px;
+        }
+        .cyber-input-row {
+            display: grid;
+            grid-template-columns: 1fr 80px;
+            gap: 4px;
+            margin-bottom: 3px;
+        }
+        .cyber-notes-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cyber-notes-row .arrow { opacity: 0.45; font-size: 0.7rem; }
+
+        /* --- lifepath fields --- */
+        .lp-field { margin-bottom: 0.3rem; }
+        .lp-label { font-size: 0.6rem; opacity: 0.65; text-transform: uppercase; }
+        .lp-input {
+            width: 100%;
+            font-size: 0.85rem;
+            padding: 2px 0;
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+            border-bottom: 1px solid var(--primary-color);
+            font-family: inherit;
+            outline: none;
+        }
+        .lp-textarea {
+            width: 100%;
+            min-height: 60px;
+            resize: vertical;
+            font-size: 0.85rem;
+            padding: 4px;
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .lp-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.25rem 0.5rem;
+        }
+        .lp-three-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.25rem 0.4rem;
+        }
+        .lp-two-col-eq {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+        }
+
+        .friend-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+        .friend-row .arr { opacity: 0.45; }
+
+        /* --- nav active state --- */
+        nav li.tab-active a { color: var(--secondary-color); }
+        nav ul { list-style: none; display: flex; gap: 1.5rem; padding: 0; }
+    </style>
+</head>
+<body>
+<div class="effects-container scanline-effect old-crt-monitor">
+<div class="retro-container retro-effects">
+
+    <header>
+        <h1>// CYBERPUNK RED //</h1>
+        <nav role="navigation">
+            <ul>
+                <li id="nav-datafile" class="alert tab-active">
+                    <a href="#" id="tab-btn-datafile">[ DATAFILE ]</a>
+                </li>
+                <li id="nav-lifepath">
+                    <a href="#" id="tab-btn-lifepath">[ LIFEPATH ]</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ============================
+         TAB 1: DATAFILE
+    ============================= -->
+    <main id="tab-datafile">
+    <div class="sheet-grid">
+
+        <!-- LEFT: main content -->
+        <div class="sheet-main">
+
+            <!-- IDENTITY -->
+            <section>
+                <div class="cp-header">IDENTITY</div>
+                <div class="identity-layout">
+                    <div class="portrait-box">[ PHOTO ]</div>
+                    <div>
+                        <div class="f-row">
+                            <span class="f-label">Handle</span>
+                            <input type="text" class="f-input f-input-bordered" data-field="handle" placeholder="_">
+                        </div>
+                        <div class="f-row">
+                            <span class="f-label">Role</span>
+                            <input type="text" class="f-input f-input-bordered" data-field="role" placeholder="_">
+                        </div>
+                        <div class="f-row">
+                            <span class="f-label">Player</span>
+                            <input type="text" class="f-input f-input-bordered" data-field="player" placeholder="_">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATS -->
+            <section>
+                <div class="cp-header">STATS</div>
+                <div class="stats-grid">
+                    <stat-box-curr-max id="stat_int"  label="INT"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_ref"  label="REF"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_dex"  label="DEX"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_tech" label="TECH"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_cool" label="COOL"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_will" label="WILL"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_luck" label="LUCK"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_move" label="MOVE"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_body" label="BODY"></stat-box-curr-max>
+                    <stat-box-curr-max id="stat_emp"  label="EMP"></stat-box-curr-max>
+                </div>
+            </section>
+
+            <!-- COMBAT -->
+            <section>
+                <div class="cp-header">COMBAT</div>
+                <div class="combat-grid">
+                    <stat-box-curr-max id="stat_hits"     label="HITS"></stat-box-curr-max>
+                    <div class="stat-box">
+                        <div class="box-label">SERIOUSLY WOUNDED</div>
+                        <div class="input-row">
+                            <input type="number" data-field="seriously_wounded" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="box-label">DEATH SAVE</div>
+                        <div class="input-row">
+                            <input type="number" data-field="death_save" placeholder="0">
+                        </div>
+                    </div>
+                    <stat-box-curr-max id="stat_humanity" label="HUMANITY"></stat-box-curr-max>
+                </div>
+            </section>
+
+            <!-- SKILLS -->
+            <section>
+                <div class="cp-header">SKILLS</div>
+                <div class="f-row" style="margin-bottom:0.4rem">
+                    <span class="f-label">Role Ability</span>
+                    <input type="text"   class="f-input f-input-bordered" data-field="role_ability_name"  placeholder="ability name" style="flex:2">
+                    <input type="number" class="f-input f-input-bordered f-input-sm" data-field="role_ability_val" placeholder="0">
+                </div>
+                <skill-table id="skills-table" label=""></skill-table>
+            </section>
+
+            <!-- WEAPONS & ARMOR -->
+            <section>
+                <div class="cp-header">WEAPONS &amp; ARMOR</div>
+                <div class="wa-layout">
+                    <div>
+                        <div class="f-label" style="margin-bottom:4px">ARMOR</div>
+                        <table class="cp-table">
+                            <thead>
+                                <tr>
+                                    <th>Armor</th>
+                                    <th style="width:40px">SP</th>
+                                    <th style="width:56px">Penalty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="armor-tbody"></tbody>
+                        </table>
+                        <div class="wa-note">PENALTY APPLIES TO DEX, REF &amp; MOVE</div>
+                    </div>
+                    <div>
+                        <div class="f-label" style="margin-bottom:4px">WEAPONS</div>
+                        <table class="cp-table">
+                            <thead>
+                                <tr>
+                                    <th>Weapon</th>
+                                    <th style="width:50px">DMG</th>
+                                    <th style="width:44px">Ammo</th>
+                                    <th style="width:36px">ROF</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weapons-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /sheet-main -->
+
+        <!-- RIGHT: CYBERWARE -->
+        <aside>
+            <section>
+                <div class="cp-header">CYBERWARE</div>
+                <div id="cyberware-list"></div>
+            </section>
+        </aside>
+
+    </div>
+    </main>
+
+    <!-- ============================
+         TAB 2: LIFEPATH
+    ============================= -->
+    <main id="tab-lifepath" style="display:none">
+    <div class="lifepath-grid-layout">
+
+        <!-- LEFT: LIFEPATH -->
+        <section>
+            <div class="cp-header">LIFEPATH</div>
+
+            <div class="lp-field">
+                <div class="lp-label">Cultural Origins</div>
+                <input type="text" class="lp-input" data-field="lp_cultural_origins">
+            </div>
+
+            <div class="lp-two-col">
+                <div class="lp-field">
+                    <div class="lp-label">Personality</div>
+                    <input type="text" class="lp-input" data-field="lp_personality">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Clothing Style</div>
+                    <input type="text" class="lp-input" data-field="lp_clothing_style">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Hair Style</div>
+                    <input type="text" class="lp-input" data-field="lp_hair_style">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Affectation</div>
+                    <input type="text" class="lp-input" data-field="lp_affectation">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">What Do You Value Most?</div>
+                    <input type="text" class="lp-input" data-field="lp_value_most">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Feelings About People?</div>
+                    <input type="text" class="lp-input" data-field="lp_feelings_people">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Most Valued Person</div>
+                    <input type="text" class="lp-input" data-field="lp_valued_person">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Most Valued Possession</div>
+                    <input type="text" class="lp-input" data-field="lp_valued_possession">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Family Background</div>
+                    <input type="text" class="lp-input" data-field="lp_family_background">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Childhood Environment</div>
+                    <input type="text" class="lp-input" data-field="lp_childhood_env">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Family Crisis</div>
+                    <input type="text" class="lp-input" data-field="lp_family_crisis">
+                </div>
+                <div class="lp-field">
+                    <div class="lp-label">Life Goals</div>
+                    <input type="text" class="lp-input" data-field="lp_life_goals">
+                </div>
+            </div>
+
+            <div class="lp-two-col-eq" style="margin-top:0.4rem">
+                <div>
+                    <div class="lp-label" style="margin-bottom:4px">Friends</div>
+                    <div id="friends-list"></div>
+                </div>
+                <div>
+                    <div class="lp-label" style="margin-bottom:4px">Tragic Love Affairs</div>
+                    <div id="love-list"></div>
+                </div>
+            </div>
+
+            <div style="margin-top:0.5rem">
+                <div class="lp-label" style="margin-bottom:4px">Enemies</div>
+                <table class="cp-table">
+                    <thead>
+                        <tr>
+                            <th>Who?</th>
+                            <th>What Caused It?</th>
+                            <th>What Can They Throw at You?</th>
+                            <th>What's Gonna Happen?</th>
+                        </tr>
+                    </thead>
+                    <tbody id="enemies-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="lp-field" style="margin-top:0.5rem">
+                <div class="lp-label">Additional Notes</div>
+                <textarea class="lp-textarea" data-field="lp_additional_notes"></textarea>
+            </div>
+        </section>
+
+        <!-- RIGHT: ROLE LIFEPATH + STYLE & SUBSTANCE + GEAR -->
+        <div>
+            <section>
+                <div class="cp-header">ROLE SPECIFIC LIFEPATH</div>
+                <textarea class="lp-textarea" data-field="lp_role_specific" style="min-height:130px"></textarea>
+            </section>
+
+            <section>
+                <div class="cp-header">STYLE &amp; SUBSTANCE</div>
+                <div class="lp-field">
+                    <div class="lp-label">Fashion</div>
+                    <textarea class="lp-textarea" data-field="ss_fashion" style="min-height:60px"></textarea>
+                </div>
+                <div class="lp-three-col">
+                    <div class="lp-field">
+                        <div class="lp-label">Housing</div>
+                        <input type="text" class="lp-input" data-field="ss_housing">
+                    </div>
+                    <div class="lp-field">
+                        <div class="lp-label">Rent</div>
+                        <input type="text" class="lp-input" data-field="ss_rent">
+                    </div>
+                    <div class="lp-field">
+                        <div class="lp-label">Lifestyle</div>
+                        <input type="text" class="lp-input" data-field="ss_lifestyle">
+                    </div>
+                </div>
+                <div class="lp-two-col">
+                    <div class="lp-field">
+                        <div class="lp-label">Improvement Points (IP)</div>
+                        <input type="number" class="lp-input" data-field="ss_ip">
+                    </div>
+                    <div class="lp-field">
+                        <div class="lp-label">Reputation</div>
+                        <input type="text" class="lp-input" data-field="ss_reputation">
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="cp-header">GEAR</div>
+                <div class="f-row" style="margin-bottom:0.4rem">
+                    <span class="f-label">CASH</span>
+                    <input type="text" class="f-input f-input-bordered" data-field="gear_cash" placeholder="€$0">
+                </div>
+                <table class="cp-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Notes</th>
+                            <th>Name</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gear-tbody"></tbody>
+                </table>
+            </section>
+        </div>
+
+    </div>
+    </main>
+
+    <footer>
+        <button onclick="saveSheet()">[ SAVE ]</button>
+        <button onclick="exportSheet()">[ EXPORT ]</button>
+        <button onclick="importSheet()">[ IMPORT ]</button>
+        <button onclick="clearSheet()">[ CLEAR ]</button>
+        <span style="font-size:0.6rem;opacity:0.45;margin-left:0.5rem" id="save-indicator"></span>
+    </footer>
+
+</div>
+</div>
+
+<script type="module">
+import './src/functions/utils/loadWebComponents.js';
+
+const STORAGE_KEY = 'cpr-red-v1';
+
+// ── Generate repetitive rows ──────────────────────────────────────────────────
+
+function buildArmorRows() {
+    const tbody = document.getElementById('armor-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+        tbody.innerHTML += `<tr>
+            <td><input type="text"   data-field="armor_name_${i}"></td>
+            <td><input type="number" data-field="armor_sp_${i}"></td>
+            <td><input type="number" data-field="armor_penalty_${i}"></td>
+        </tr>`;
+    }
+}
+
+function buildWeaponRows() {
+    const tbody = document.getElementById('weapons-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+        tbody.innerHTML += `<tr>
+            <td><input type="text" data-field="weapon_name_${i}"></td>
+            <td><input type="text" data-field="weapon_dmg_${i}"></td>
+            <td><input type="text" data-field="weapon_ammo_${i}"></td>
+            <td><input type="text" data-field="weapon_rof_${i}"></td>
+            <td><input type="text" data-field="weapon_notes_${i}"></td>
+        </tr>`;
+    }
+}
+
+function buildCyberwareEntries() {
+    const container = document.getElementById('cyberware-list');
+    container.innerHTML = '';
+    for (let i = 0; i < 9; i++) {
+        container.innerHTML += `
+        <div class="cyber-entry">
+            <div class="cyber-header-row"><span>NAME</span><span>CATEGORY</span></div>
+            <div class="cyber-input-row">
+                <input type="text" class="f-input" data-field="cyber_name_${i}" placeholder="_">
+                <input type="text" class="f-input" data-field="cyber_cat_${i}"  placeholder="_">
+            </div>
+            <div class="cyber-notes-row">
+                <span class="arrow">▶</span>
+                <span class="f-label">NOTES</span>
+                <input type="text" class="f-input" style="flex:1" data-field="cyber_notes_${i}" placeholder="_">
+            </div>
+        </div>`;
+    }
+}
+
+function buildFriendsLove() {
+    const fl = document.getElementById('friends-list');
+    const ll = document.getElementById('love-list');
+    fl.innerHTML = ''; ll.innerHTML = '';
+    for (let i = 0; i < 4; i++) {
+        fl.innerHTML += `<div class="friend-row">
+            <span class="arr">▶</span>
+            <input type="text" class="lp-input" data-field="lp_friend_${i}">
+        </div>`;
+        ll.innerHTML += `<div class="friend-row">
+            <span class="arr">▶</span>
+            <input type="text" class="lp-input" data-field="lp_love_${i}">
+        </div>`;
+    }
+}
+
+function buildEnemyRows() {
+    const tbody = document.getElementById('enemies-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+        tbody.innerHTML += `<tr>
+            <td><input type="text" data-field="enemy_who_${i}"></td>
+            <td><input type="text" data-field="enemy_cause_${i}"></td>
+            <td><input type="text" data-field="enemy_throw_${i}"></td>
+            <td><input type="text" data-field="enemy_outcome_${i}"></td>
+        </tr>`;
+    }
+}
+
+function buildGearRows() {
+    const tbody = document.getElementById('gear-tbody');
+    tbody.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+        const a = i * 2, b = a + 1;
+        tbody.innerHTML += `<tr>
+            <td><input type="text" data-field="gear_name_${a}"></td>
+            <td><input type="text" data-field="gear_notes_${a}"></td>
+            <td><input type="text" data-field="gear_name_${b}"></td>
+            <td><input type="text" data-field="gear_notes_${b}"></td>
+        </tr>`;
+    }
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+
+function showTab(name) {
+    document.getElementById('tab-datafile').style.display  = name === 'datafile'  ? '' : 'none';
+    document.getElementById('tab-lifepath').style.display  = name === 'lifepath'  ? '' : 'none';
+    document.getElementById('nav-datafile').classList.toggle('tab-active', name === 'datafile');
+    document.getElementById('nav-lifepath').classList.toggle('tab-active', name === 'lifepath');
+}
+
+document.getElementById('tab-btn-datafile').addEventListener('click', e => { e.preventDefault(); showTab('datafile'); });
+document.getElementById('tab-btn-lifepath').addEventListener('click', e => { e.preventDefault(); showTab('lifepath'); });
+
+// ── Stat helpers ──────────────────────────────────────────────────────────────
+
+const STAT_IDS = ['int','ref','dex','tech','cool','will','luck','move','body','emp'];
+
+function getStatsArray() {
+    return STAT_IDS.map(s => {
+        const el = document.getElementById(`stat_${s}`);
+        return { name: s.toUpperCase(), value: el ? el.max : 0 };
+    });
+}
+
+function syncSkillStats() {
+    const table = document.getElementById('skills-table');
+    if (table) table.stats = getStatsArray();
+}
+
+// ── Persistence ───────────────────────────────────────────────────────────────
+
+window.saveSheet = function() {
+    const data = {};
+    document.querySelectorAll('[data-field]').forEach(el => {
+        data[el.dataset.field] = el.value;
+    });
+    const allStats = [...STAT_IDS.map(s => `stat_${s}`), 'stat_hits', 'stat_humanity'];
+    allStats.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { data[`_curr_${id}`] = el.curr; data[`_max_${id}`] = el.max; }
+    });
+    const skillTable = document.getElementById('skills-table');
+    if (skillTable) data._skills = skillTable.data;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const ind = document.getElementById('save-indicator');
+    if (ind) { ind.textContent = 'SAVED'; setTimeout(() => ind.textContent = '', 1200); }
+};
+
+function loadSheet() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('[data-field]').forEach(el => {
+        if (data[el.dataset.field] !== undefined) el.value = data[el.dataset.field];
+    });
+    const allStats = [...STAT_IDS.map(s => `stat_${s}`), 'stat_hits', 'stat_humanity'];
+    allStats.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (data[`_curr_${id}`] !== undefined) el.curr = data[`_curr_${id}`];
+        if (data[`_max_${id}`]  !== undefined) el.max  = data[`_max_${id}`];
+    });
+    syncSkillStats();
+    const skillTable = document.getElementById('skills-table');
+    if (skillTable && data._skills) {
+        skillTable.stats = getStatsArray();
+        skillTable.data  = data._skills;
+    }
+}
+
+window.exportSheet = function() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) { alert('Nothing saved yet.'); return; }
+    const blob = new Blob([raw], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cpr-character.json';
+    a.click();
+};
+
+window.importSheet = function() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                JSON.parse(ev.target.result);
+                localStorage.setItem(STORAGE_KEY, ev.target.result);
+                loadSheet();
+            } catch { alert('Invalid file.'); }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+};
+
+window.clearSheet = function() {
+    if (confirm('Wipe all character data? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+    }
+};
+
+// ── Auto-save wiring ──────────────────────────────────────────────────────────
+
+document.addEventListener('input',          () => window.saveSheet());
+document.addEventListener('change',         () => window.saveSheet());
+document.addEventListener('stat-changed',   () => { syncSkillStats(); window.saveSheet(); });
+document.addEventListener('skills-changed', () => window.saveSheet());
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+buildArmorRows();
+buildWeaponRows();
+buildCyberwareEntries();
+buildFriendsLove();
+buildEnemyRows();
+buildGearRows();
+
+Promise.all([
+    customElements.whenDefined('stat-box-curr-max'),
+    customElements.whenDefined('skill-table'),
+]).then(() => {
+    syncSkillStats();
+    loadSheet();
+});
+</script>
+</body>
+</html>
